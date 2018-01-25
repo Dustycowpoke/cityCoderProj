@@ -1,5 +1,4 @@
 # Allows bulk geocoding via google maps api
-# Drew Phillips Jan 2018
 
 import openpyxl # to read input excel and write output file
 import datetime # to name output file
@@ -9,25 +8,25 @@ import sys # to get excel sheet name in CLI
 import os # to get argv
 from cityCoder_pass import *
 
-# TODO: create bounding box for results?
+success = 0
+failure = 0
 
 # Enter API key and set up permanent url
 url = 'https://maps.googleapis.com/maps/api/geocode/json?'
 API_KEY = GITHUB_API_KEY
 
-# Create unique timestamp for output file
-run_time = datetime.datetime.now().strftime('%H-%M-%S')
+'''******Change city here*******''' 
+city = ",Madison_Heights"
+state = ",MI"	
 
-# Main read and write 'module'
-print('Opening workbook...')
-
-# Check if user entered excel workbook name in CLI
-if (len(sys.argv) < 2):
+# check that user entered workbook name as argv
+try:
+	workbook_in = sys.argv[1]
+	print('Opening workbook...')
+	
+except:
 	print("Remember to enter an xlsx file as an argument value")
 	sys.exit()
-
-# user enters workbook name in CLI
-workbook_in = sys.argv[1]
 
 # get workbook name without file extension to name output file
 workbook_in_name = os.path.splitext(workbook_in)[0]
@@ -39,12 +38,11 @@ sheet_in = wb.active
 # Name new columns lat and long 
 # Add as final columns
 last_col = sheet_in.max_column
-sheet_in.cell(row = 1, column = (last_col + 1)).value = 'lat'
-sheet_in.cell(row = 1, column = (last_col + 2)).value = 'long'
+sheet_in.cell(row = 1, column = (last_col + 1)).value = 'y_lat'
+sheet_in.cell(row = 1, column = (last_col + 2)).value = 'x_long'
 
-# Increase accuracy by passing consistent values to geocoder 
-city = ",Madison_Heights"
-state = ",MI"
+# Create unique timestamp for output file
+run_time = datetime.datetime.now().strftime('%H-%M-%S')
 
 # for all rows except first row
 for row_iter in range(2, (sheet_in.max_row+1)):
@@ -61,6 +59,7 @@ for row_iter in range(2, (sheet_in.max_row+1)):
 		
 	if (len(data['results'])) == 0:
 		print('%i - %s...NOT FOUND' % ((row_iter-1), raw_address))
+		failure += 1
 		pass
 		
 	else:
@@ -74,6 +73,8 @@ for row_iter in range(2, (sheet_in.max_row+1)):
 		sheet_in.cell(row = row_iter, column = (last_col + 1)).value = lat
 		sheet_in.cell(row = row_iter, column = (last_col + 2)).value = lng
 
+		success += 1
+		
 # Save xlsx as new file with geocoded addresses	
 wb.save('%s_geocoded_%s.xlsx' % (workbook_in_name, run_time))
-print("Done")
+print('Done, %i records written and %i records skipped' % (success, failure))
