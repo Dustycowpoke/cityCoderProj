@@ -1,6 +1,4 @@
-# Allows bulk geocoding via google maps api
-
-import openpyxl # to read input excel and write output file
+import openpyxl
 import datetime # to name output file
 import requests # to get json from google maps API
 import json # to manage json data returned from google maps API
@@ -16,7 +14,7 @@ url = 'https://maps.googleapis.com/maps/api/geocode/json?'
 API_KEY = GITHUB_API_KEY
 
 '''******Change city here*******''' 
-city = ",Madison_Heights"
+city = ",Madison+Heights"
 state = ",MI"	
 
 # check that user entered workbook name as argv
