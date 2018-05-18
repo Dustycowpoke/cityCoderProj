@@ -1,5 +1,5 @@
-#cityCoder.py
-##Batch geocoder for addresses using Google Maps API and a simple Excel-based data structure
+# cityCoder.py
+### Batch geocoder for addresses using Google Maps API and a simple Excel-based data structure
 
 - I made this to geocode 11,000+ water shut-off boxes for the Dept of Public Services in Madison Heights, MI
 
